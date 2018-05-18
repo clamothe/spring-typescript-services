@@ -63,6 +63,7 @@ public class RequestMappingFactory {
 
             produces.addAll(Arrays.asList(invokeMethod(annotation, "produces")));
             value.addAll(Arrays.asList(invokeMethod(annotation, "value")));
+            value.addAll(Arrays.asList(invokeMethod(annotation, "path")));
         }
     }
 

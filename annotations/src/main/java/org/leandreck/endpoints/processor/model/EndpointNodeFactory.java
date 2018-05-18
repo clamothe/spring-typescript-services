@@ -95,12 +95,14 @@ public class EndpointNodeFactory {
 
     private static String defineUrl(final TypeElement typeElement) {
         final RequestMapping requestMapping = typeElement.getAnnotation(RequestMapping.class);
+
         if (requestMapping != null) {
-            final String[] mappings = requestMapping.value();
-            if (mappings.length > 0) {
-                return mappings[0];
+            final String path = extractPathOrNull(requestMapping.path(), requestMapping.value());
+            if (path != null) {
+                return path;
             }
         }
+
         return "";
     }
 
@@ -113,5 +115,15 @@ public class EndpointNodeFactory {
         }
 
         return template;
+    }
+
+    private static String extractPathOrNull(String[] checkFirst, String[] checkSecond) {
+        if (checkFirst.length >= 1) {
+            return checkFirst[0];
+        } else if (checkSecond.length >= 1) {
+            return checkSecond[0];
+        }
+
+        return null;
     }
 }
