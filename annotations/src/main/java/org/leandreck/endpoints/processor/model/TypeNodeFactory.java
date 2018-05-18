@@ -16,6 +16,7 @@
 package org.leandreck.endpoints.processor.model;
 
 import org.leandreck.endpoints.annotations.TypeScriptIgnore;
+import org.leandreck.endpoints.annotations.TypeScriptType;
 import org.leandreck.endpoints.processor.config.TemplateConfiguration;
 import org.leandreck.endpoints.processor.model.typefactories.ConcreteTypeNodeFactory;
 import org.leandreck.endpoints.processor.model.typefactories.TypeNodeKind;
@@ -31,21 +32,20 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 import static org.leandreck.endpoints.processor.model.typefactories.TypeNodeKind.OPTIONAL;
-import static org.leandreck.endpoints.processor.model.typefactories.TypeNodeKind.TYPEVAR;
 
 /**
  */
 public final class TypeNodeFactory {
+
+    static List<String> TYPESCRIPT_TYPES = Arrays.asList(
+        "number",
+        "string",
+        "boolean"
+    );
 
     private final Types typeUtils;
     private final Elements elementUtils;
@@ -196,8 +196,19 @@ public final class TypeNodeFactory {
             final ProxyNode proxyNode = new ProxyNode(fieldName, parameterName, optional);
             nodes.put(key, proxyNode);
 
-            final ConcreteTypeNodeFactory nodeFactory = factories.get(typeNodeKind);
+
+
+            ConcreteTypeNodeFactory nodeFactory;
+            final TypeScriptType typeScriptTypeAnnotation = TypeNodeUtils.getAnnotationForClass(typeMirror, TypeScriptType.class, typeUtils);
+
+            if (typeScriptTypeAnnotation != null && TYPESCRIPT_TYPES.contains(typeScriptTypeAnnotation.value())) {
+                nodeFactory = factories.get(TypeNodeKind.MAPPED);
+            } else {
+                nodeFactory = factories.get(typeNodeKind);
+            }
+
             final TypeNode newTypeNode = nodeFactory.createTypeNode(fieldName, parameterName, optional, typeMirror, containingType);
+
             proxyNode.setNode(newTypeNode);
             nodes.put(key, newTypeNode);
             return newTypeNode;

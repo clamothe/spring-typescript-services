@@ -34,6 +34,8 @@ public @interface TypeScriptType {
     /**
      * The name of the interface. Defaults to the name of the java type annotated with {@link TypeScriptType}.
      *
+     * If a TypeScript type such as "number", "string" or "boolean" is specified, no interface will be generated.
+     *
      * @return name.
      */
     String value() default "";
