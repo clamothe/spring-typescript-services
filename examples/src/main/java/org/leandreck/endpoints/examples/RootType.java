@@ -48,6 +48,7 @@ public class RootType {
 
     private Map<?, MapValueType> mapValue;
     private Map<MapKeyType, ?> mapKey;
+    private NativeTypes nativeTypes;
 
     public RootType() {
         this.id = Long.MIN_VALUE;
@@ -123,5 +124,14 @@ public class RootType {
 
     public void setSimpleArray(SimpleEnum[] simpleArray) {
         this.simpleArray = simpleArray;
+    }
+
+    public NativeTypes getNativeTypes() {
+        return nativeTypes;
+    }
+
+    public RootType setNativeTypes(NativeTypes nativeTypes) {
+        this.nativeTypes = nativeTypes;
+        return this;
     }
 }
