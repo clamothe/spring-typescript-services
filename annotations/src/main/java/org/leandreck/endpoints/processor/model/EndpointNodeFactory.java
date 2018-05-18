@@ -68,7 +68,10 @@ public class EndpointNodeFactory {
             superclassMethods = defineMethods((TypeElement) ((DeclaredType)superclass).asElement(), containingType);
         } else {
             superclassMethods = new ArrayList<>(20);
+
         }
+
+        final RequestMapping requestMapping = typeElement.getAnnotation(RequestMapping.class);
 
         //Implemented Interfaces:
         typeElement.getInterfaces().stream()
@@ -77,7 +80,7 @@ public class EndpointNodeFactory {
 
         //Own enclosed Methods
         ElementFilter.methodsIn(typeElement.getEnclosedElements()).stream()
-                    .map(methodElement -> methodNodeFactory.createMethodNode(methodElement, containingType))
+                    .map(methodElement -> methodNodeFactory.createMethodNode(methodElement, containingType, requestMapping))
                     .filter(method -> !method.isIgnored())
                     .forEach(superclassMethods::add);
         return superclassMethods;

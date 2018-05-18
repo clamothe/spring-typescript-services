@@ -30,7 +30,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  */
 public class RequestMappingFactory {
 
-    public RequestMapping createRequestMapping(final ExecutableElement methodElement) {
+    public RequestMapping createRequestMapping(final ExecutableElement methodElement, org.springframework.web.bind.annotation.RequestMapping controllerRequestMapping) {
         final ArrayList<RequestMethod> methods = new ArrayList<>();
         final ArrayList<String> produces = new ArrayList<>();
         final ArrayList<String> value = new ArrayList<>();
@@ -41,6 +41,10 @@ public class RequestMappingFactory {
         populate(methods, produces, value, methodElement.getAnnotation(PutMapping.class), PUT);
         populate(methods, produces, value, methodElement.getAnnotation(DeleteMapping.class), DELETE);
         populate(methods, produces, value, methodElement.getAnnotation(PatchMapping.class), PATCH);
+
+        if (produces.isEmpty() && controllerRequestMapping != null) {
+            produces.addAll(Arrays.asList(controllerRequestMapping.produces()));
+        }
 
         return new RequestMapping(methods.toArray(new RequestMethod[0]), produces.toArray(new String[0]), value.toArray(new String[0]));
     }

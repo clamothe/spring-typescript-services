@@ -54,8 +54,8 @@ class MethodNodeFactory {
         this.elementUtils = elementUtils;
     }
 
-    MethodNode createMethodNode(final ExecutableElement methodElement, final DeclaredType containingType) {
-        final RequestMapping requestMapping = requestMappingFactory.createRequestMapping(methodElement);
+    MethodNode createMethodNode(final ExecutableElement methodElement, final DeclaredType containingType, org.springframework.web.bind.annotation.RequestMapping controllerRequestMapping) {
+        final RequestMapping requestMapping = requestMappingFactory.createRequestMapping(methodElement, controllerRequestMapping);
 
         final String name = defineName(methodElement);
         final boolean ignored = defineIgnored(methodElement, requestMapping);
